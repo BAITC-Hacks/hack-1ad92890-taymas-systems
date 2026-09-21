@@ -14,6 +14,8 @@ COMPLAINT_HINTS = (
     "холодн",
     "пропал",
     "не работает",
+    "сломан",
+    "грязн",
     "wifi",
     "wi-fi",
     "wi‑fi",
@@ -24,6 +26,9 @@ INFO_HINTS = (
     "как получить",
     "где ",
     "парковк",
+    "расписани",
+    "как пройти",
+    "график",
 )
 
 DRAFTS = {
@@ -99,19 +104,31 @@ def load_messages(path: Path = MESSAGES_FILE) -> list[str]:
     return [line.strip() for line in lines if line.strip()]
 
 
+def classify_text(text: str, number: int = 0) -> Ticket:
+    cleaned = text.strip()
+    category = categorize(cleaned)
+    return Ticket(
+        number=number,
+        text=cleaned,
+        category=category,
+        draft=draft_for(cleaned, category),
+    )
+
+
 def classify(path: Path = MESSAGES_FILE) -> list[Ticket]:
-    tickets = []
-    for index, text in enumerate(load_messages(path), start=1):
-        category = categorize(text)
-        tickets.append(
-            Ticket(
-                number=index,
-                text=text,
-                category=category,
-                draft=draft_for(text, category),
-            )
-        )
-    return tickets
+    return [
+        classify_text(text, number=index)
+        for index, text in enumerate(load_messages(path), start=1)
+    ]
+
+
+def ticket_payload(ticket: Ticket) -> dict[str, str | int]:
+    return {
+        "id": ticket.number,
+        "text": ticket.text,
+        "category": ticket.category,
+        "draft": ticket.draft,
+    }
 
 
 def render(tickets: list[Ticket]) -> str:

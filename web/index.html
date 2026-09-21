@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TayMas Desk — диспетчерская</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="frame">
+      <header class="top">
+        <div class="brand">
+          <span class="mark" aria-hidden="true">T</span>
+          <div>
+            <p class="name">TayMas Desk</p>
+            <p class="role">диспетчерская кампуса · ночная смена</p>
+          </div>
+        </div>
+        <div class="status">
+          <span class="live"><i></i> эфир</span>
+          <time id="clock" datetime="">--:--:--</time>
+        </div>
+      </header>
+
+      <section class="stats" aria-label="Сводка смены">
+        <article>
+          <p class="k">в очереди</p>
+          <p class="v" id="stat-queue">—</p>
+        </article>
+        <article>
+          <p class="k">жалобы</p>
+          <p class="v warn" id="stat-complaints">—</p>
+        </article>
+        <article>
+          <p class="k">критичных</p>
+          <p class="v crit" id="stat-critical">—</p>
+        </article>
+        <article>
+          <p class="k">шум отсеян</p>
+          <p class="v muted" id="stat-noise">—</p>
+        </article>
+      </section>
+
+      <main class="desk">
+        <section class="col inbox" aria-labelledby="inbox-title">
+          <div class="col-head">
+            <h1 id="inbox-title">Входящие</h1>
+            <p>категория и черновик ответа сразу</p>
+          </div>
+
+          <form id="composer" class="composer">
+            <label for="incoming">Новое обращение</label>
+            <textarea
+              id="incoming"
+              name="incoming"
+              rows="3"
+              maxlength="400"
+              placeholder="Вставьте текст: «Пропал свет в аудитории 204»"
+              required
+            ></textarea>
+            <div class="composer-row">
+              <button type="submit">Разобрать</button>
+              <p id="composer-hint">Enter — отправить, Shift+Enter — новая строка</p>
+            </div>
+          </form>
+
+          <div id="tickets" class="stack"></div>
+        </section>
+
+        <section class="col monitor" aria-labelledby="monitor-title">
+          <div class="col-head">
+            <h1 id="monitor-title">Мониторинг</h1>
+            <p id="alert-summary">критичных —</p>
+          </div>
+
+          <div class="filter-bar">
+            <button type="button" id="btn-critical" class="on" aria-pressed="true">
+              только critical
+            </button>
+            <button type="button" id="btn-all" aria-pressed="false">все 8</button>
+          </div>
+
+          <div id="alerts" class="stack alerts"></div>
+        </section>
+      </main>
+    </div>
+    <script src="/app.js"></script>
+  </body>
+</html>

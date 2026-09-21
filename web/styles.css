@@ -98,6 +98,44 @@ textarea {
   font-size: 13px;
 }
 
+.duty {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition: color 0.3s ease;
+}
+
+.duty#duty-face,
+.duty > span:first-child {
+  font-size: 16px;
+}
+
+.duty.calm {
+  color: var(--help);
+}
+
+.duty.alert {
+  color: var(--warn);
+}
+
+.duty.alarm {
+  color: var(--critical);
+  animation: duty-shake 0.4s infinite;
+}
+
+@keyframes duty-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+
 .live {
   display: inline-flex;
   align-items: center;
@@ -325,6 +363,26 @@ button:hover {
   display: none;
 }
 
+.alert.new {
+  animation: alert-in 1.3s ease;
+}
+
+@keyframes alert-in {
+  0% {
+    transform: translateY(-10px);
+    opacity: 0;
+    background: rgba(226, 75, 50, 0.22);
+    border-color: var(--critical);
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    background: var(--panel);
+  }
+}
+
 .alert.critical {
   border-left: 3px solid var(--critical);
 }
@@ -342,6 +400,100 @@ button:hover {
   font-family: "IBM Plex Mono", ui-monospace, monospace;
   font-size: 12px;
   color: var(--muted);
+}
+
+.sim-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.sim-bar button {
+  background: transparent;
+  color: var(--warn);
+  border: 1px dashed var(--warn);
+  white-space: nowrap;
+}
+
+.sim-bar button:hover {
+  background: rgba(212, 160, 23, 0.14);
+}
+
+.sim-bar button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+#sim-hint {
+  margin: 0;
+}
+
+.siren-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 40;
+  background: radial-gradient(circle, transparent 50%, rgba(226, 75, 50, 0.4) 100%);
+}
+
+.siren-overlay.active {
+  animation: siren-pulse 0.35s ease-in-out 2;
+}
+
+@keyframes siren-pulse {
+  0%,
+  100% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+#confetti-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+}
+
+#confetti-canvas.hidden {
+  display: none;
+}
+
+.shift-complete {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(6, 7, 6, 0.72);
+  z-index: 70;
+}
+
+.shift-complete.hidden {
+  display: none;
+}
+
+.shift-card {
+  background: var(--panel);
+  border: 1px solid var(--critical);
+  padding: 28px 32px;
+  max-width: 360px;
+  text-align: center;
+}
+
+.shift-title {
+  margin: 0 0 12px;
+  font-size: 22px;
+}
+
+.shift-stats {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 @media (max-width: 860px) {

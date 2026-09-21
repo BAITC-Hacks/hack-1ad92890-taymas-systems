@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import random
 import threading
 import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -27,6 +28,19 @@ EVENT_META = {
     "cache miss": {"title": "Cache miss", "host": "redis-1", "service": "кэш"},
     "deploy ok": {"title": "Деплой прошёл", "host": "ci", "service": "релиз"},
 }
+
+# Пул случайных инцидентов для кнопки «Симулировать инцидент» — живой эфир
+# без внешних сервисов, просто рандом на бэкенде.
+SIM_POOL = [
+    {"message": "backup failed", "level": "critical", "title": "Бэкап не выполнен", "host": "backup-02", "service": "бэкап"},
+    {"message": "auth spike", "level": "critical", "title": "Всплеск неудачных входов", "host": "auth-gw", "service": "доступ"},
+    {"message": "disk io stuck", "level": "critical", "title": "Диск перестал отвечать", "host": "storage-03", "service": "диск"},
+    {"message": "ssl expiring", "level": "warn", "title": "SSL истекает через 3 дня", "host": "edge-lb", "service": "сертификат"},
+    {"message": "queue spike", "level": "warn", "title": "Очередь задач растёт", "host": "worker-7", "service": "очередь"},
+    {"message": "disk io high", "level": "warn", "title": "Высокая нагрузка на диск", "host": "storage-02", "service": "диск"},
+    {"message": "new device", "level": "info", "title": "Новое устройство в сети", "host": "wifi-b2", "service": "сеть"},
+    {"message": "temp sensor ok", "level": "info", "title": "Датчик температуры в норме", "host": "server-room", "service": "климат"},
+]
 
 
 def boot_state() -> dict:
@@ -81,6 +95,17 @@ def handle_api(method: str, path: str, raw: bytes) -> tuple[int, bytes, str]:
             ticket = ticket_payload(classify_text(text, number=next_id))
             STATE["tickets"].insert(0, ticket)
         return json_bytes(ticket)
+
+    if method == "POST" and path == "/api/simulate":
+        with STATE_LOCK:
+            pick = random.choice(SIM_POOL)
+            next_id = max((item["id"] for item in STATE["events"]), default=0) + 1
+            event = {"id": next_id, **pick}
+            STATE["events"].insert(0, event)
+            STATE["total_events"] = len(STATE["events"])
+            STATE["critical_count"] = sum(1 for item in STATE["events"] if item["level"] == "critical")
+            STATE["summary"] = f"критичных {STATE['critical_count']}"
+        return json_bytes(event)
 
     return json_bytes({"error": "не найдено"}, 404)
 

@@ -24,6 +24,9 @@
           </div>
         </div>
         <div class="status">
+          <span class="duty calm" id="duty" title="настроение дежурного зависит от числа критичных алертов">
+            <span id="duty-face">🐈</span><span id="duty-text">дежурный спокоен</span>
+          </span>
           <span class="live"><i></i> эфир</span>
           <time id="clock" datetime="">--:--:--</time>
         </div>
@@ -87,10 +90,26 @@
             <button type="button" id="btn-all" aria-pressed="false">все 8</button>
           </div>
 
+          <div class="sim-bar">
+            <button type="button" id="btn-sim">⚡ симулировать инцидент</button>
+            <p id="sim-hint">подкинуть в поток случайное новое событие</p>
+          </div>
+
           <div id="alerts" class="stack alerts"></div>
         </section>
       </main>
     </div>
+
+    <div id="siren-overlay" class="siren-overlay" aria-hidden="true"></div>
+    <canvas id="confetti-canvas" class="hidden" aria-hidden="true"></canvas>
+    <div id="shift-complete" class="shift-complete hidden" role="status">
+      <div class="shift-card">
+        <p class="shift-title">Смена закрыта 🎉</p>
+        <p id="shift-stats" class="shift-stats"></p>
+        <button type="button" id="shift-dismiss">Продолжить дежурство</button>
+      </div>
+    </div>
+
     <script src="/app.js"></script>
   </body>
 </html>
